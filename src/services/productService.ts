@@ -7,14 +7,9 @@ const productRepository = new ProductRepository;
 const companyRepository = new CompanyRepository;
 
 export class ProductService {
- 
-    async findALLProduct(): Promise<ProductDTO[]>{
-        const products = await productRepository.findMany();
-        return products;
-    }
 
-    async findProductByFilter({ date, name, price, companyId }: ProductDTO): Promise<ProductDTO[]>{
-        const products = await productRepository.findByFilters({date, companyId, price, name});
+    async findProduct({ date, name, price, companyId }: ProductDTO): Promise<ProductDTO[]>{
+        const products = await productRepository.findMany({date, companyId, price, name});
 
         return products;
     }

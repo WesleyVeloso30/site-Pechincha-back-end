@@ -7,20 +7,7 @@ const productService = new ProductService();
 
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
-    const products = await productService.findALLProduct();
-
-    return res.status(200).json(products);
-  } catch (error: any) {
-    return res.status(400).json(error.message);
-  }
-});
-
-productRoute.get("/filter", async (req: Request, res: Response) => {
-  try {
     const { date, name, price, companyId } = req.query;
-
-    if (!date && !name && !price && !companyId)
-      throw new Error("Nenhum filtro informado.");
 
     let dateConvertido: Date | null = null;
     if (date) {
@@ -36,7 +23,7 @@ productRoute.get("/filter", async (req: Request, res: Response) => {
       dateConvertido = new Date(`${year}/${month}/${day}`);
     }
 
-    const products = await productService.findProductByFilter({
+    const products = await productService.findProduct({
       ...(dateConvertido && { date: dateConvertido }),
       ...(name && { name: name as string }),
       ...(price && { price: Number(price) }),

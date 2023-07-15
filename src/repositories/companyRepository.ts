@@ -1,12 +1,16 @@
 import { Company, Prisma, PrismaClient } from "@prisma/client";
+import ICompanyRepository from "./interfaces/companyRepositoryInterface";
 
-export class CompanyRepository {
-    private repository: Prisma.CompanyDelegate<
-    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-  > = new PrismaClient().company;
+export class CompanyRepository implements ICompanyRepository {
+    private repository = new PrismaClient().company;
 
   async selectOne(where: Prisma.CompanyWhereInput): Promise<Company | null> {
     const result = await this.repository.findFirst({ where });
+    return result;
+  }
+
+  async create(data: Company): Promise<Company> {
+    const result = await this.repository.create({ data });
     return result;
   }
 }

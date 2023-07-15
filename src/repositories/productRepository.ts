@@ -1,17 +1,11 @@
 import { Prisma, PrismaClient, Product } from "@prisma/client";
 import ProductDTO from "../models/product";
+import IProductRepository from "./interfaces/productRepositoryInterface";
 
-export class ProductRepository {
-    private repository: Prisma.ProductDelegate<
-    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
-  > = new PrismaClient().product;
+export class ProductRepository implements IProductRepository {
+    private repository = new PrismaClient().product;
 
-  async findMany(): Promise<ProductDTO[]>{
-    const result = await this.repository.findMany();
-    return result;
-  }
-
-  async findByFilters(data: ProductDTO): Promise<ProductDTO[]> {
+  async findMany(data: ProductDTO): Promise<ProductDTO[]> {
     const result = await this.repository.findMany({
       where: {
         date: data.date,
@@ -46,13 +40,13 @@ export class ProductRepository {
     return result;
   }
 
-    async delete( id: number ): Promise<string> {
-        await this.repository.delete({
-          where:{
-            id,
-          }
-        })
-        const result = "Produto deletado com sucesso!"
-        return result;
+  async delete( id: number ): Promise<string> {
+    await this.repository.delete({
+      where:{
+        id,
       }
+    })
+    const result = "Produto deletado com sucesso!"
+    return result;
+  }
 }
