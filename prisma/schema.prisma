@@ -12,27 +12,67 @@ datasource db {
 
 model Product {
     id Int @id
+    startAt DateTime?
+    endAt DateTime?
+    regularPrice Int?
+    promotionalPrice Int?
+    title String?
+    subTitle String?
+    description String?
+    imageUrl String?
+
     company Company @relation(fields: [id], references: [id])
-    date DateTime
-    price Int
-    name String
+    favoritedBy FavoriteProducts[]
 
     @@map("product")
 }
 
 model Company {
     id Int @id @default(autoincrement())
-    address Address?
     name String
+
+    address Address?
     products Product[]
+    
     @@map("company")
 }
 
 model Address {
     id Int @id
-    street String
-    district String
-    city String
+    street String?
+    district String?
+    city String?
+    state String?
+    referencePoint String?
+    number Int?
+    zipCode String?
+
     company Company @relation(fields: [id], references: [id])
+    
     @@map("address")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  email String @unique
+  name String?
+  password String?
+
+  favoriteProducts FavoriteProducts[]
+
+  @@map("user")
+}
+
+model FavoriteProducts {
+  id Int @id @default(autoincrement())
+  startAt DateTime?
+  endAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+  userId Int
+
+  product Product @relation(fields: [productId], references: [id])
+  productId Int
+
+  @@map("favoriteProducts")
 }
