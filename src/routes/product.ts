@@ -7,7 +7,7 @@ const productService = new ProductService();
 
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
-    const { date, name, price, companyId } = req.query;
+    const { date, title, price, companyId } = req.query;
 
     let dateConvertido: Date | null = null;
     if (date) {
@@ -25,7 +25,7 @@ productRoute.get("/", async (req: Request, res: Response) => {
 
     const products = await productService.findProduct({
       ...(dateConvertido && { date: dateConvertido }),
-      ...(name && { name: name as string }),
+      ...(title && { title: title as string }),
       ...(price && { price: Number(price) }),
       ...(companyId && { id: companyId as string }),
     });
@@ -38,38 +38,69 @@ productRoute.get("/", async (req: Request, res: Response) => {
 
 productRoute.post("/", async (req: Request, res: Response) => {
   try {
-    let { companyId, date, price, name } = req.body;
+    let {
+      companyId,
+      startAt,
+      endAt,
+      regularPrice,
+      promotionalPrice,
+      title,
+      subTitle,
+      imageUrl,
+      description
+    } = req.body;
 
+    // verificação se falta algum campo obrigatório
     if (
       !companyId ||
-      !date ||
-      !name ||
-      !price
+      !startAt ||
+      !endAt ||
+      !title ||
+      !promotionalPrice ||
+      !imageUrl
     ) {
       throw new Error("Algum campo inválido");
     }
 
-    price = Number(price);
-    const smashDate = date.split("-");
+    // conversão dos dados para o tipo correto
+    regularPrice = Number(regularPrice);
+    promotionalPrice = Number(promotionalPrice);
+    // conversão e tratamento para startAt e endAt
+    const smashStartAt = startAt.split("-");
+    const smashEndAt = endAt.split("-");
 
-    const day = smashDate[2];
-    const month = smashDate[1];
-    const year = smashDate[0];
+    const startAtDay = smashStartAt[2];
+    const startAtMonth = smashStartAt[1];
+    const startAtYear = smashStartAt[0];
+    const endAtDay = smashEndAt[2];
+    const endAtMonth = smashEndAt[1];
+    const endAtYear = smashEndAt[0];
 
-    Number(day);
-    Number(month);
+    Number(startAtDay);
+    Number(startAtMonth);
+    Number(endAtDay);
+    Number(endAtMonth);
 
-    if (day > 31 || month > 12) throw new Error("Informe uma data válida.");
+    if (startAtDay > 31 || startAtMonth > 12) throw new Error("Informe uma data válida.");
+    if (endAtDay > 31 || endAtMonth > 12) throw new Error("Informe uma data válida.");
 
-    const dateConvertido = new Date(`${year}/${month}/${day}`);
+    const startAtConverted = new Date(`${startAtYear}/${startAtMonth}/${startAtDay}`);
+    const endAtConverted = new Date(`${endAtYear}/${endAtMonth}/${endAtDay}`);    
 
+    // seguindo para o service...
     const product = await productService.addProduct({
-      price,
-      date: dateConvertido,
+      regularPrice,
+      promotionalPrice,
+      startAt: startAtConverted,
+      endAt: endAtConverted,
       companyId,
-      name,
+      title,
+      subTitle,
+      imageUrl,
+      description
     } as ProductDTO);
 
+    //enviando resposta
     return res.status(201).json(product);
   } catch (error: any) {
     return res.status(400).json(error.message);
@@ -78,7 +109,7 @@ productRoute.post("/", async (req: Request, res: Response) => {
 
 productRoute.put("/:id", async (req: Request, res: Response) => {
   try {
-    let { price, name, date } = req.body;
+    let { price, title, date } = req.body;
     const { id } = req.params;
 
     let dateConvertido: Date | null = null;
@@ -103,7 +134,7 @@ productRoute.put("/:id", async (req: Request, res: Response) => {
       {
         date: dateConvertido,
         price,
-        name,
+        title,
       } as ProductDTO,
       Number(id)
     );

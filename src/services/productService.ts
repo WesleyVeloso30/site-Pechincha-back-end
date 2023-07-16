@@ -8,37 +8,53 @@ const companyRepository = new CompanyRepository;
 
 export class ProductService {
 
-    async findProduct({ date, name, price, companyId }: ProductDTO): Promise<ProductDTO[]>{
-        const products = await productRepository.findMany({date, companyId, price, name});
+    async findProduct({ startAt, endAt, title, promotionalPrice, companyId }: ProductDTO): Promise<ProductDTO[]>{
+        const products = await productRepository.findMany({startAt, endAt, companyId, promotionalPrice, title});
 
         return products;
     }
 
-    async addProduct({ companyId, name, price, date }: ProductDTO): Promise<ProductDTO> {
+    async addProduct(data: ProductDTO): Promise<ProductDTO> {
+        const {
+            companyId,
+            title,
+            promotionalPrice,
+            regularPrice,
+            startAt,
+            endAt,
+            description,
+            subTitle,
+            imageUrl
+        } = data;
 
         const id = companyId;
         const company = await companyRepository.selectOne({ id })
 
         if (!company) throw new Error('Empresa não encontrada');
 
-        const addProduct = await productRepository.create({ 
-            name, 
-            price, 
+        const addProduct = await productRepository.create({
+            title, 
+            regularPrice,
+            promotionalPrice, 
             id,
-            date,
+            startAt,
+            endAt,
+            description,
+            subTitle,
+            imageUrl
         } as Product);
         return addProduct;
     }
 
-    async updateProduct({ name, price, date }: ProductDTO, id: number): Promise<ProductDTO> {
+    async updateProduct({ title, promotionalPrice, startAt, endAt }: ProductDTO, id: number): Promise<ProductDTO> {
         const productExist = await productRepository.selectOne({ id });
 
         if (!productExist) throw new Error("Produto não encontrado!");
 
         const updateProduct = await productRepository.update({ 
-            name, 
-            price, 
-            date, 
+            title, 
+            promotionalPrice, 
+            startAt, endAt, 
         }, 
         id);
         return updateProduct;

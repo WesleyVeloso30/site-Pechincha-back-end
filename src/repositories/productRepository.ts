@@ -6,12 +6,28 @@ export class ProductRepository implements IProductRepository {
     private repository = new PrismaClient().product;
 
   async findMany(data: ProductDTO): Promise<ProductDTO[]> {
+    const {
+      companyId,
+      description,
+      endAt,
+      imageUrl,
+      promotionalPrice,
+      regularPrice,
+      startAt,
+      subTitle,
+      title,
+    } = data;
     const result = await this.repository.findMany({
       where: {
-        date: data.date,
-        name: data.name,
-        id: data.companyId,
-        price: data.price,
+        startAt,
+        endAt,
+        title,
+        subTitle,
+        id: companyId,
+        promotionalPrice,
+        regularPrice,
+        description,
+        imageUrl,
       }
     })
 
@@ -28,13 +44,13 @@ export class ProductRepository implements IProductRepository {
     return result;
   }
 
-  async update({  name, price, companyId, date }: ProductDTO, id: number): Promise<ProductDTO> {
+  async update({  title, promotionalPrice, companyId, startAt }: ProductDTO, id: number): Promise<ProductDTO> {
     const result = await this.repository.update({
       where: { id },
       data: {
-        name,
-        price,
-        date,
+        title,
+        promotionalPrice,
+        startAt,
       },
     });
     return result;
