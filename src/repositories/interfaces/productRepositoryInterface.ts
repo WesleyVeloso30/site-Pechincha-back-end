@@ -5,6 +5,6 @@ export default interface IProductRepository {
     findMany(data: ProductDTO): Promise<ProductDTO[]>;
     create(data: Product): Promise<ProductDTO>;
     selectOne(where: Prisma.ProductWhereInput): Promise<ProductDTO | null>;
-    update({  name, price, companyId, date }: ProductDTO, id: number): Promise<ProductDTO>;
+    update({ title, promotionalPrice, companyId, startAt }: ProductDTO, id: number): Promise<ProductDTO>;
     delete( id: number ): Promise<string>;
 }

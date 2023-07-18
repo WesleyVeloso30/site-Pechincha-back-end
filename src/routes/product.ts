@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import ProductDTO from "../models/product";
 import { ProductService } from "../services/productService";
+import { verifyIfNotANumber, verifyIfPastDate } from "../util";
 
 const productRoute = Router();
 const productService = new ProductService();
@@ -63,11 +64,18 @@ productRoute.post("/", async (req: Request, res: Response) => {
     }
 
     // conversão dos dados para o tipo correto
-    regularPrice = Number(regularPrice);
-    promotionalPrice = Number(promotionalPrice);
+    regularPrice = verifyIfNotANumber(regularPrice);
+    promotionalPrice = verifyIfNotANumber(promotionalPrice);
     // conversão e tratamento para startAt e endAt
-    const smashStartAt = startAt.split("-");
-    const smashEndAt = endAt.split("-");
+    const startDateAndHour = startAt.split("T");
+    const endDateAndHour = startAt.split("T");
+
+    const startHour = startDateAndHour[1];
+    const endHour = endDateAndHour[1];
+
+    //Date
+    const smashStartAt = startDateAndHour[0].split("-");
+    const smashEndAt = endDateAndHour[0].split("-");
 
     const startAtDay = smashStartAt[2];
     const startAtMonth = smashStartAt[1];
@@ -76,16 +84,18 @@ productRoute.post("/", async (req: Request, res: Response) => {
     const endAtMonth = smashEndAt[1];
     const endAtYear = smashEndAt[0];
 
-    Number(startAtDay);
-    Number(startAtMonth);
-    Number(endAtDay);
-    Number(endAtMonth);
+    verifyIfNotANumber(startAtDay);
+    verifyIfNotANumber(startAtMonth);
+    verifyIfNotANumber(endAtDay);
+    verifyIfNotANumber(endAtMonth);
 
     if (startAtDay > 31 || startAtMonth > 12) throw new Error("Informe uma data válida.");
+    verifyIfPastDate(startAtDay, startAtMonth, startAtYear);
     if (endAtDay > 31 || endAtMonth > 12) throw new Error("Informe uma data válida.");
+    verifyIfPastDate(endAtDay, endAtMonth, endAtYear);
 
-    const startAtConverted = new Date(`${startAtYear}/${startAtMonth}/${startAtDay}`);
-    const endAtConverted = new Date(`${endAtYear}/${endAtMonth}/${endAtDay}`);    
+    const startAtConverted = new Date(`${startAtYear}/${startAtMonth}/${startAtDay}T${startHour}`);
+    const endAtConverted = new Date(`${endAtYear}/${endAtMonth}/${endAtDay}T${endHour}`);    
 
     // seguindo para o service...
     const product = await productService.addProduct({
