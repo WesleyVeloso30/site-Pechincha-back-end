@@ -1,5 +1,5 @@
 import { Product } from "@prisma/client";
-import ProductDTO from "../models/product";
+import ProductDTO from "../shared/src/models/product";
 import { CompanyRepository } from "../repositories/companyRepository";
 import { ProductRepository } from "../repositories/productRepository";
 

@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import ProductDTO from "../models/product";
+import ProductDTO from "../shared/src/models/product";
 import { ProductService } from "../services/productService";
 import { verifyIfNotANumber, verifyIfPastDate } from "../util";
 

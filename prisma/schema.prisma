@@ -7,6 +7,7 @@ datasource db {
   url      = "file:./dev.db"
 }
 
+//Nao da para criar mais de um produto para a mesma empresa
 model Product {
   id               Int                @id @default(autoincrement())
   startAt          DateTime?

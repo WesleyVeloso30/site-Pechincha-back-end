@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import CompanyDTO from "../models/company";
+import CompanyDTO from "../shared/src/models/company";
 import { CompanyService } from "../services/companyService";
 import { CompanyRepository } from "../repositories/companyRepository";
 import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";

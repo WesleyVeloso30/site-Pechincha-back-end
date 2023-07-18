@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, Product } from "@prisma/client";
-import ProductDTO from "../models/product";
+import ProductDTO from "../shared/src/models/product";
 import IProductRepository from "./interfaces/productRepositoryInterface";
 
 export class ProductRepository implements IProductRepository {

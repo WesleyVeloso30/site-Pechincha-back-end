@@ -1,6 +1,11 @@
 export default interface ProductDTO {
-    price?: number
-    date?: Date
+    promotionalPrice?: number | null
+    regularPrice?: number | null
+    startAt?: Date | null
+    endAt?: Date | null
     companyId?: number
-    name?: string
+    title?: string | null
+    subTitle?: string | null
+    description?: string | null
+    imageUrl?: string | null
 }
