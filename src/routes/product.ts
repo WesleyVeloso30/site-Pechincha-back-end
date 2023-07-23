@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import ProductDTO from "../shared/src/models/product";
 import { ProductService } from "../services/productService";
-import { verifyIfNotANumber, verifyIfPastDate } from "../util";
+import { verifyIfNotANumber, verifyIfPastDate } from "../shared/src/util";
 
 const productRoute = Router();
 const productService = new ProductService();
