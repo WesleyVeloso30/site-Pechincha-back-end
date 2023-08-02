@@ -7,7 +7,6 @@ datasource db {
   url      = "file:./dev.db"
 }
 
-//Nao da para criar mais de um produto para a mesma empresa
 model Product {
   id               Int                @id @default(autoincrement())
   startAt          DateTime?
@@ -19,7 +18,8 @@ model Product {
   description      String?
   imageUrl         String?
   favoritedBy      FavoriteProducts[]
-  company          Company            @relation(fields: [id], references: [id])
+  company          Company            @relation(fields: [companyId], references: [id])
+  companyId        Int
 
   @@map("product")
 }
@@ -28,7 +28,7 @@ model Company {
   id       Int      @id @default(autoincrement())
   name     String
   address  Address?
-  products Product?
+  products Product[]
 
   @@map("company")
 }

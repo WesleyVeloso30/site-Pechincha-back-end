@@ -94,8 +94,8 @@ productRoute.post("/", async (req: Request, res: Response) => {
     if (endAtDay > 31 || endAtMonth > 12) throw new Error("Informe uma data válida.");
     verifyIfPastDate(endAtDay, endAtMonth, endAtYear);
 
-    const startAtConverted = new Date(`${startAtYear}/${startAtMonth}/${startAtDay}T${startHour}`);
-    const endAtConverted = new Date(`${endAtYear}/${endAtMonth}/${endAtDay}T${endHour}`);    
+    const startAtConverted = new Date(`${startAtYear}-${startAtMonth}-${startAtDay}T${startHour}`);
+    const endAtConverted = new Date(`${endAtYear}-${endAtMonth}-${endAtDay}T${endHour}`);    
 
     // seguindo para o service...
     const product = await productService.addProduct({
