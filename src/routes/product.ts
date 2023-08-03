@@ -57,8 +57,8 @@ productRoute.post("/", async (req: Request, res: Response) => {
       !startAt ||
       !endAt ||
       !title ||
-      !promotionalPrice ||
-      !imageUrl
+      !promotionalPrice
+      // !imageUrl
     ) {
       throw new Error("Algum campo inválido");
     }

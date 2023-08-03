@@ -36,7 +36,7 @@ export class ProductService {
             title, 
             regularPrice,
             promotionalPrice, 
-            id,
+            companyId,
             startAt,
             endAt,
             description,

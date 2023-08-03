@@ -17,15 +17,15 @@ model Product {
   subTitle         String?
   description      String?
   imageUrl         String?
+  companyId        Int
   favoritedBy      FavoriteProducts[]
   company          Company            @relation(fields: [companyId], references: [id])
-  companyId        Int
 
   @@map("product")
 }
 
 model Company {
-  id       Int      @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   name     String
   address  Address?
   products Product[]

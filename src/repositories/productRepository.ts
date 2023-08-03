@@ -23,7 +23,7 @@ export class ProductRepository implements IProductRepository {
         endAt,
         title,
         subTitle,
-        id: companyId,
+        companyId: companyId,
         promotionalPrice,
         regularPrice,
         description,
