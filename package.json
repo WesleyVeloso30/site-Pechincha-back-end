@@ -18,9 +18,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx nodemon index.js",
-    "build": "tsc",
-    "dev": "tsc && node dist/app.js"
+    "start": "node dist/app.js",
+    "build": "npx tsc",
+    "dev": "tsc && npx nodemon index.js"
   },
   "repository": {
     "type": "git",
