@@ -28,6 +28,13 @@ export class ProductRepository implements IProductRepository {
         regularPrice,
         description,
         imageUrl,
+      },
+      include: {
+        company: {
+          select: {
+            name: true,
+          }
+        }
       }
     })
 
