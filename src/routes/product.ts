@@ -68,7 +68,7 @@ productRoute.post("/", async (req: Request, res: Response) => {
     promotionalPrice = verifyIfNotANumber(promotionalPrice);
     // conversão e tratamento para startAt e endAt
     const startDateAndHour = startAt.split("T");
-    const endDateAndHour = startAt.split("T");
+    const endDateAndHour = endAt.split("T");
 
     const startHour = startDateAndHour[1];
     const endHour = endDateAndHour[1];
