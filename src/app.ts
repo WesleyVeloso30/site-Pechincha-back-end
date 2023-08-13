@@ -17,6 +17,8 @@ app.use('/', routes);
 
 export default app;
 
-app.listen(3000, () => {
-    console.log("Server On, Port 3000");
+const port = 3000;
+
+app.listen(port, () => {
+    console.log(`Server On, Port ${port}`);
 });   

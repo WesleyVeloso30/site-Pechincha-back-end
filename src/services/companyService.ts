@@ -13,6 +13,10 @@ export class CompanyService implements ICompanyService{
     async addCompany(data: CompanyDTO): Promise<CompanyDTO> {
         const { name } = data;
 
+        const companyExist = await this.companyRepository.selectOne({ name });
+
+        if (companyExist) throw new Error('Empresa já existe.');
+
         const addCompany = await this.companyRepository.create({ 
             name,
         } as Company);
