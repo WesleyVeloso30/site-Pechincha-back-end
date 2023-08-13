@@ -2,17 +2,34 @@ import { Product } from "@prisma/client";
 import ProductDTO from "../shared/src/models/product";
 import { CompanyRepository } from "../repositories/companyRepository";
 import { ProductRepository } from "../repositories/productRepository";
+import { dateTreatment } from "../shared/src/util";
 
 const productRepository = new ProductRepository;
 const companyRepository = new CompanyRepository;
 
 export class ProductService {
 
+    async findOne(id: number): Promise<ProductDTO | null>{
+        const product = await productRepository.selectOne({ id });
+
+        if(!product) throw new Error('Produto não encontrado.');
+
+        return product;
+    }
+
     async findProduct({ startAt, endAt, title, promotionalPrice, companyId }: ProductDTO): Promise<ProductDTO[]>{
         const products = await productRepository.findMany({startAt, endAt, companyId, promotionalPrice, title});
 
         return products;
     }
+
+    async findAllTitles(dateLimit: string): Promise<{title: string | null}[]> {
+        const endAt = dateTreatment(dateLimit);
+
+        const titles = await productRepository.getTitles(endAt);
+
+        return titles;
+    };
 
     async addProduct(data: ProductDTO): Promise<ProductDTO> {
         const {

@@ -10,13 +10,10 @@ export function verifyIfNotANumber(param: string): number {
 }
 
 
-export function verifyIfPastDate(day: number, month: number, year: number): void {
+export function verifyIfPastDate(date: Date): void {
     const dateActual = new Date();
-    const dayActual = dateActual.getDate();
-    const monthActual = dateActual.getMonth() + 1;
-    const yearActual = dateActual.getFullYear();
 
-    if (year < yearActual || year == yearActual && month < monthActual || year == yearActual && month == monthActual && day < dayActual){
+    if (date < dateActual){
         throw new Error ("Informe uma data válida.");
     }
 }
@@ -35,10 +32,10 @@ export function dateTreatment(date: string): Date {
 
     const day = verifyIfNotANumber(dateDay);
     const month = verifyIfNotANumber(dateMonth);
-    const year = verifyIfNotANumber(dateYear);
+    verifyIfNotANumber(dateYear);
 
     if (day > 31 || month > 12) throw new Error("Informe uma data válida.");
-    verifyIfPastDate(day, month, year);
+
     const dateConverted = new Date(`${dateYear}-${dateMonth}-${dateDay}T${hour}`);
     
     if (isNaN(dateConverted.getTime())) throw new Error("Informe uma data válida.");

@@ -29,7 +29,13 @@ export class ProductRepository implements IProductRepository {
         description,
         imageUrl,
       },
-      include: {
+      select: {
+        title: true,
+        subTitle: true,
+        promotionalPrice: true,
+        endAt: true,
+        startAt: true,
+        imageUrl: true,
         company: {
           select: {
             name: true,
@@ -47,8 +53,34 @@ export class ProductRepository implements IProductRepository {
   }
 
   async selectOne(where: Prisma.ProductWhereInput): Promise<ProductDTO | null> {
-    const result = await this.repository.findFirst({ where });
+    const result = await this.repository.findFirst({ 
+      where,
+      include: {
+        company: {
+          select: {
+            name: true,
+          }
+        }
+      }
+    });
     return result;
+  }
+
+  async getTitles(endAt: Date): Promise<{title: string | null}[]> {
+    console.log(endAt)
+    const titles = await this.repository.findMany({
+      where: {
+        endAt: {
+          gt: endAt
+        }
+      },
+      select: {
+        title: true,
+      },
+      distinct: ['title'],
+    });
+
+    return titles;
   }
 
   async update({  title, promotionalPrice, companyId, startAt }: ProductDTO, id: number): Promise<ProductDTO> {

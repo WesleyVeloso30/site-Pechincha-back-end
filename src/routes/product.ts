@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import ProductDTO from "../shared/src/models/product";
 import { ProductService } from "../services/productService";
-import { dateTreatment, verifyIfNotANumber } from "../shared/src/util";
+import { dateTreatment, verifyIfNotANumber, verifyIfPastDate } from "../shared/src/util";
 
 const productRoute = Router();
 const productService = new ProductService();
@@ -37,6 +37,32 @@ productRoute.get("/", async (req: Request, res: Response) => {
   }
 });
 
+productRoute.get("/titles", async (req: Request, res: Response) => {
+  try {
+    const dateLimit = req.query.dateLimit as unknown as string;
+
+    const products = await productService.findAllTitles(dateLimit);
+
+    return res.status(200).json(products);
+  } catch (error: any) {
+    return res.status(400).json(error.message);
+  }
+});
+
+productRoute.get("/:id", async (req: Request, res: Response) => {
+  try {
+    console.log(req.params.id as unknown as string);
+    const id = verifyIfNotANumber(req.params.id as unknown as string);
+
+    const products = await productService.findOne(id);
+
+    return res.status(200).json(products);
+  } catch (error: any) {
+    return res.status(400).json(error.message);
+  }
+});
+
+
 productRoute.post("/", async (req: Request, res: Response) => {
   try {
     let {
@@ -70,6 +96,9 @@ productRoute.post("/", async (req: Request, res: Response) => {
     // conversão e tratamento para startAt e endAt
     const startAtConverted = dateTreatment(startAt);
     const endAtConverted = dateTreatment(endAt);
+
+    verifyIfPastDate(startAtConverted);
+    verifyIfPastDate(endAtConverted);
 
     if (endAtConverted <= startAtConverted) throw new Error("Informe uma data válida.");
 
