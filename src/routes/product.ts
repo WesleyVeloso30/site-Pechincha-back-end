@@ -8,27 +8,38 @@ const productService = new ProductService();
 
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
-    const { date, title, price, companyId } = req.query;
+    const { startAt, endAt, title, promotionalPrice, companyId } = req.query;
 
-    let dateConvertido: Date | null = null;
-    if (date) {
-      const stringDate = String(date);
-      const smashDate = stringDate.split("-");
+    let endAtConverted: Date | null = null;
+    if (endAt) {
+      endAtConverted = dateTreatment(endAt as string);
+    }
+    
+    let startAtConverted: Date | null = null;
+    if (startAt) {
+      startAtConverted = dateTreatment(startAt as string);
+    }
+    
+    if (startAtConverted && endAtConverted) {
+      if (endAtConverted <= startAtConverted) throw new Error("A data inicial não pode ser maior do que a data final da promoção.");
+    }
 
-      const day = Number(smashDate[2]);
-      const month = Number(smashDate[1]);
-      const year = Number(smashDate[0]);
-
-      if (day > 31 || month > 12) throw new Error("Informe uma data válida.");
-
-      dateConvertido = new Date(`${year}/${month}/${day}`);
+    let promotionalPriceConverted: number | null = null;
+    if(promotionalPrice) {
+      promotionalPriceConverted = verifyIfNotANumber(promotionalPrice as string);
+    }
+    
+    let companyIdConverted: number | undefined = undefined;
+    if(companyId) {
+      companyIdConverted = verifyIfNotANumber(companyId as string);
     }
 
     const products = await productService.findProduct({
-      ...(dateConvertido && { date: dateConvertido }),
+      ...(endAtConverted && { endAt: endAtConverted }),
+      ...(startAtConverted && { startAt: startAtConverted }),
       ...(title && { title: title as string }),
-      ...(price && { price: Number(price) }),
-      ...(companyId && { id: companyId as string }),
+      ...(promotionalPrice && { promotionalPrice: promotionalPriceConverted }),
+      ...(companyId && { companyId: companyIdConverted }),
     });
 
     return res.status(200).json(products);
@@ -100,7 +111,7 @@ productRoute.post("/", async (req: Request, res: Response) => {
     verifyIfPastDate(startAtConverted);
     verifyIfPastDate(endAtConverted);
 
-    if (endAtConverted <= startAtConverted) throw new Error("Informe uma data válida.");
+    if (endAtConverted <= startAtConverted) throw new Error("A data inicial não pode ser maior do que a data final da promoção.");
 
     // seguindo para o service...
     const product = await productService.addProduct({
