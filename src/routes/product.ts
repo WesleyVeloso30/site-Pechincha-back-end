@@ -2,9 +2,15 @@ import { Router, Request, Response } from "express";
 import ProductDTO from "../shared/src/models/product";
 import { ProductService } from "../services/productService";
 import { dateTreatment, verifyIfNotANumber, verifyIfPastDate } from "../shared/src/util";
+import { ProductRepository } from "../repositories/productRepository";
+import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
+import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";
+import { CompanyRepository } from "../repositories/companyRepository";
 
 const productRoute = Router();
-const productService = new ProductService();
+const productRepository: IProductRepository = new ProductRepository();
+const companyRepository: ICompanyRepository = new CompanyRepository();
+const productService = new ProductService(productRepository, companyRepository);
 
 productRoute.get("/", async (req: Request, res: Response) => {
   try {

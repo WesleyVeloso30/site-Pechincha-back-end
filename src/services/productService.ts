@@ -1,16 +1,22 @@
 import { Product } from "@prisma/client";
 import ProductDTO from "../shared/src/models/product";
-import { CompanyRepository } from "../repositories/companyRepository";
-import { ProductRepository } from "../repositories/productRepository";
 import { dateTreatment } from "../shared/src/util";
+import { IProductService } from "./interface/productServiceInterface";
+import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
+import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";
 
-const productRepository = new ProductRepository;
-const companyRepository = new CompanyRepository;
+export class ProductService implements IProductService {
 
-export class ProductService {
+    private productRepository: IProductRepository;
+    private companyRepository: ICompanyRepository;
+
+    constructor(iProductRepository: IProductRepository, ICompanyRepository: ICompanyRepository) {
+        this.productRepository = iProductRepository;
+        this.companyRepository = ICompanyRepository;
+    }
 
     async findOne(id: number): Promise<ProductDTO | null>{
-        const product = await productRepository.selectOne({ id });
+        const product = await this.productRepository.selectOne({ id });
 
         if(!product) throw new Error('Produto não encontrado.');
 
@@ -18,7 +24,7 @@ export class ProductService {
     }
 
     async findProduct({ startAt, endAt, title, promotionalPrice, companyId }: ProductDTO): Promise<ProductDTO[]>{
-        const products = await productRepository.findMany({startAt, endAt, companyId, promotionalPrice, title});
+        const products = await this.productRepository.findMany({startAt, endAt, companyId, promotionalPrice, title});
 
         return products;
     }
@@ -26,7 +32,7 @@ export class ProductService {
     async findAllTitles(dateLimit: string): Promise<{title: string | null}[]> {
         const endAt = dateTreatment(dateLimit);
 
-        const titles = await productRepository.getTitles(endAt);
+        const titles = await this.productRepository.getTitles(endAt);
 
         return titles;
     };
@@ -45,11 +51,11 @@ export class ProductService {
         } = data;
 
         const id = companyId;
-        const company = await companyRepository.selectOne({ id })
+        const company = await this.companyRepository.selectOne({ id })
 
         if (!company) throw new Error('Empresa não encontrada');
 
-        const addProduct = await productRepository.create({
+        const addProduct = await this.productRepository.create({
             title, 
             regularPrice,
             promotionalPrice, 
@@ -64,11 +70,11 @@ export class ProductService {
     }
 
     async updateProduct({ title, promotionalPrice, startAt, endAt }: ProductDTO, id: number): Promise<ProductDTO> {
-        const productExist = await productRepository.selectOne({ id });
+        const productExist = await this.productRepository.selectOne({ id });
 
         if (!productExist) throw new Error("Produto não encontrado!");
 
-        const updateProduct = await productRepository.update({ 
+        const updateProduct = await this.productRepository.update({ 
             title, 
             promotionalPrice, 
             startAt, endAt, 
@@ -79,11 +85,11 @@ export class ProductService {
 
     async deleteProduct( id: number ): Promise<string> {
 
-        const productExist = await productRepository.selectOne({ id });
+        const productExist = await this.productRepository.selectOne({ id });
 
         if (!productExist) throw new Error("Produto não encontrado!");
 
-        const msg = await productRepository.delete( id );
+        const msg = await this.productRepository.delete( id );
 
         return msg;
     }
