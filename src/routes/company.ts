@@ -4,6 +4,7 @@ import { CompanyService } from "../services/companyService";
 import { CompanyRepository } from "../repositories/companyRepository";
 import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";
 import { ICompanyService } from "../services/interface/companyServiceInterface";
+import { verifyIfNotANumber } from "../shared/src/util";
 
 const companyRoute = Router();
 const companyRepository: ICompanyRepository = new CompanyRepository();
@@ -28,5 +29,25 @@ companyRoute.post("/", async (req: Request, res: Response) => {
       return res.status(400).json(error.message);
     }
 });
+
+companyRoute.get("/", async (req: Request, res: Response) => {
+  try {
+    const {name, id} = req.query;
+
+    let idNumber: number | null = null;
+    if(id) {
+      idNumber = verifyIfNotANumber(id as string);
+    }
+
+    const companys = await companyService.getCompany({
+      ...(name && {name: name as string}),
+      ...(id && {id: idNumber as number}),
+    });
+
+    return res.status(201).json(companys);
+  } catch (error: any) {
+    return res.status(400).json(error.message);
+  }
+})
 
 export default companyRoute;

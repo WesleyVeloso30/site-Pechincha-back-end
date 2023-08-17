@@ -13,4 +13,9 @@ export class CompanyRepository implements ICompanyRepository {
     const result = await this.repository.create({ data });
     return result;
   }
+
+  async findMany(where: Prisma.CompanyWhereInput): Promise<Company[]> {
+    const result = await this.repository.findMany({where});
+    return result;
+  }
 }

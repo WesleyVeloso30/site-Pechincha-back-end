@@ -22,4 +22,9 @@ export class CompanyService implements ICompanyService{
         } as Company);
         return addCompany;
     }
+
+    async getCompany(data: CompanyDTO): Promise<CompanyDTO[]> {
+        const companys = await this.companyRepository.findMany(data);
+        return companys;
+    }
 }
