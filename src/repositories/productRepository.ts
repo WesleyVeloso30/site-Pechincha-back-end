@@ -19,8 +19,12 @@ export class ProductRepository implements IProductRepository {
     } = data;
     const result = await this.repository.findMany({
       where: {
-        startAt,
-        endAt,
+        startAt: {
+          gte: startAt as Date | undefined,
+        },
+        endAt: {
+          lte: endAt as Date | undefined,
+        },
         title,
         subTitle,
         companyId: companyId,
