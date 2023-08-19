@@ -42,7 +42,8 @@ model Address {
   referencePoint String?
   number         Int?
   zipCode        String?
-  company        Company @relation(fields: [id], references: [id])
+  company        Company? @relation(fields: [companyId], references: [id])
+  companyId      Int?     @unique
 
   @@map("address")
 }
