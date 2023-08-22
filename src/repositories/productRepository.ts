@@ -37,6 +37,7 @@ export class ProductRepository implements IProductRepository {
         title: true,
         subTitle: true,
         promotionalPrice: true,
+        regularPrice: true,
         endAt: true,
         startAt: true,
         imageUrl: true,
