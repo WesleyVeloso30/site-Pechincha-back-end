@@ -34,6 +34,7 @@ export class ProductRepository implements IProductRepository {
         imageUrl,
       },
       select: {
+        id: true,
         title: true,
         subTitle: true,
         promotionalPrice: true,
