@@ -68,7 +68,6 @@ productRoute.get("/titles", async (req: Request, res: Response) => {
 
 productRoute.get("/:id", async (req: Request, res: Response) => {
   try {
-    console.log(req.params.id as unknown as string);
     const id = verifyIfNotANumber(req.params.id as unknown as string);
 
     const products = await productService.findOne(id);

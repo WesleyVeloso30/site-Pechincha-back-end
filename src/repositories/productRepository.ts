@@ -73,7 +73,6 @@ export class ProductRepository implements IProductRepository {
   }
 
   async getTitles(endAt: Date): Promise<{title: string | null}[]> {
-    console.log(endAt)
     const titles = await this.repository.findMany({
       where: {
         endAt: {
