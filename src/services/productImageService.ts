@@ -1,8 +1,9 @@
 import admin from "firebase-admin";
 import serviceAccount from "../config/firebaseKey.json";
-import IUserImageServiceInterface from "./interfaces/userImageServiceInterface";
-import UserDTO, { FirebaseUrl } from "../models/user";
-import { IUserRepository } from "../repositories/interfaces/userRepositoryInterface";
+import FirebaseUrl from "../shared/src/models/productImage";
+import { IProductImageServiceInterface } from "./interface/productImageServiceInterface";
+import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
+import ProductDTO from "../shared/src/models/product";
 
 const bucketAddress = "pechincha-image-product.appspot.com";
 const private_key_id = process.env.PRIVATE_KEY_ID!;
@@ -22,7 +23,7 @@ admin.initializeApp({
 const bucket = admin.storage().bucket();
 
 export class ProductImageService implements IProductImageServiceInterface {
-    private ProductRepository: IProductRepository;
+    private productRepository: IProductRepository;
 
     constructor( iProductRepository: IProductRepository) {
         this.productRepository = iProductRepository;
@@ -31,7 +32,6 @@ export class ProductImageService implements IProductImageServiceInterface {
     async uploadImage(image: Express.Multer.File , id: string): Promise<FirebaseUrl>{
 
         const Product = await this.verifyProductExist(Number(id));
-        this.productActive(Product);
 
         let firebaseUrl = "";
         const fileName =  `${Date.now()}=`+ id + "." + image.originalname.split(".").pop();
@@ -57,23 +57,17 @@ export class ProductImageService implements IProductImageServiceInterface {
         firebaseUrl = file.publicUrl();
         
 
-        const FirebaseUrl = await this.ProductRepository.updateImage(firebaseUrl, Number(id));
+        const FirebaseUrl = await this.productRepository.updateImage(firebaseUrl, Number(id));
 
         return FirebaseUrl;
     }
 
     async verifyProductExist(id: number): Promise<ProductDTO> {
-        const ProductExists = await this.ProductRepository.selectOne({ id });
+        const ProductExists = await this.productRepository.selectOne({ id });
 
         if(!ProductExists) throw new Error("Usuário não encontrado.");
 
         return ProductExists;
-    }
-
-    
-    productActive(product: ProductDTO): boolean {
-        if(!product.active) throw new Error("Usuário inativo.");
-        return product.active;
     }
 }
 
