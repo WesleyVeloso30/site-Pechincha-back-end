@@ -44,7 +44,7 @@ companyRoute.get("/", async (req: Request, res: Response) => {
       ...(id && {id: idNumber as number}),
     });
 
-    return res.status(201).json(companys);
+    return res.status(200).json(companys);
   } catch (error: any) {
     return res.status(400).json(error.message);
   }
