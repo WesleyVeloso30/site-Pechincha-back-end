@@ -1,5 +1,5 @@
 import { Product } from "@prisma/client";
-import ProductDTO from "../shared/src/models/product";
+import ProductDTO, { ProductTitles } from "../shared/src/models/product";
 import { dateTreatment } from "../shared/src/util";
 import { IProductService } from "./interface/productServiceInterface";
 import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
@@ -29,7 +29,7 @@ export class ProductService implements IProductService {
         return products;
     }
 
-    async findAllTitles(dateLimit: string): Promise<{title: string | null}[]> {
+    async findAllTitles(dateLimit: string): Promise<ProductTitles[]> {
         const endAt = dateTreatment(dateLimit);
 
         const titles = await this.productRepository.getTitles(endAt);

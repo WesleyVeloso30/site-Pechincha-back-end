@@ -9,3 +9,8 @@ export default interface ProductDTO {
     description?: string | null
     imageUrl?: string | null
 }
+
+export interface ProductTitles {
+    id?: number;
+    title?: string | null;
+}

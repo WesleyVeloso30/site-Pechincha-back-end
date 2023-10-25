@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient, Product } from "@prisma/client";
-import ProductDTO from "../shared/src/models/product";
+import ProductDTO, { ProductTitles } from "../shared/src/models/product";
 import IProductRepository from "./interfaces/productRepositoryInterface";
 
 export class ProductRepository implements IProductRepository {
@@ -72,7 +72,7 @@ export class ProductRepository implements IProductRepository {
     return result;
   }
 
-  async getTitles(endAt: Date): Promise<{title: string | null}[]> {
+  async getTitles(endAt: Date): Promise<ProductTitles[]> {
     const titles = await this.repository.findMany({
       where: {
         endAt: {
@@ -81,6 +81,7 @@ export class ProductRepository implements IProductRepository {
       },
       select: {
         title: true,
+        id: true,
       },
       distinct: ['title'],
     });
