@@ -1,8 +1,8 @@
 import { Prisma, Product } from "@prisma/client";
-import ProductDTO, { ProductTitles } from "../../shared/src/models/product";
+import ProductDTO, { ProductFilter, ProductTitles } from "../../shared/src/models/product";
 
 export default interface IProductRepository {
-    findMany(data: ProductDTO): Promise<ProductDTO[]>;
+    findMany(data: ProductFilter): Promise<ProductDTO[]>;
     create(data: Product): Promise<ProductDTO>;
     selectOne(where: Prisma.ProductWhereInput): Promise<ProductDTO | null>;
     getTitles(endAt: Date): Promise<ProductTitles[]>;

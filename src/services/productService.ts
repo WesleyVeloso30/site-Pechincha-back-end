@@ -1,5 +1,5 @@
 import { Product } from "@prisma/client";
-import ProductDTO, { ProductTitles } from "../shared/src/models/product";
+import ProductDTO, { ProductFilter, ProductTitles } from "../shared/src/models/product";
 import { dateTreatment } from "../shared/src/util";
 import { IProductService } from "./interface/productServiceInterface";
 import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
@@ -23,8 +23,8 @@ export class ProductService implements IProductService {
         return product;
     }
 
-    async findProduct({ startAt, endAt, title, promotionalPrice, companyId }: ProductDTO): Promise<ProductDTO[]>{
-        const products = await this.productRepository.findMany({startAt, endAt, companyId, promotionalPrice, title});
+    async findProduct({ startAt, endAt, title, minimumPromotionalPrice, companyId, maximumPromotionalPrice }: ProductFilter): Promise<ProductDTO[]>{
+        const products = await this.productRepository.findMany({startAt, endAt, companyId, minimumPromotionalPrice, maximumPromotionalPrice, title});
 
         return products;
     }

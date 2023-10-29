@@ -14,38 +14,31 @@ const productService = new ProductService(productRepository, companyRepository);
 
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
-    const { startAt, endAt, title, promotionalPrice, companyId } = req.query;
+    const { startAt, endAt, title, maximumPromotionalPrice, companyId, minimumPromotionalPrice} = req.query;
 
-    let endAtConverted: Date | null = null;
-    if (endAt) {
-      endAtConverted = dateTreatment(endAt as string);
-    }
-    
-    let startAtConverted: Date | null = null;
-    if (startAt) {
-      startAtConverted = dateTreatment(startAt as string);
-    }
+    const endAtConverted = endAt && dateTreatment(endAt as string);
+    const startAtConverted = startAt && dateTreatment(startAt as string);
     
     if (startAtConverted && endAtConverted) {
       if (endAtConverted <= startAtConverted) throw new Error("A data inicial não pode ser maior do que a data final da promoção.");
     }
 
-    let promotionalPriceConverted: number | null = null;
-    if(promotionalPrice) {
-      promotionalPriceConverted = verifyIfNotANumber(promotionalPrice as string);
+    const minimumPromotionalPriceConverted = minimumPromotionalPrice&& verifyIfNotANumber(minimumPromotionalPrice as string);
+    const maximumPromotionalPriceConverted = maximumPromotionalPrice && verifyIfNotANumber(maximumPromotionalPrice as string);
+    
+    if (minimumPromotionalPriceConverted && maximumPromotionalPriceConverted) {
+      if (maximumPromotionalPriceConverted < minimumPromotionalPriceConverted) throw new Error("O preço mínimo não pode ser maior do que o preço máximo da promoção.");
     }
     
-    let companyIdConverted: number | undefined = undefined;
-    if(companyId) {
-      companyIdConverted = verifyIfNotANumber(companyId as string);
-    }
+    const companyIdConverted = companyId && verifyIfNotANumber(companyId as string);
 
     const products = await productService.findProduct({
       ...(endAtConverted && { endAt: endAtConverted }),
       ...(startAtConverted && { startAt: startAtConverted }),
       ...(title && { title: title as string }),
-      ...(promotionalPrice && { promotionalPrice: promotionalPriceConverted }),
-      ...(companyId && { companyId: companyIdConverted }),
+      ...(minimumPromotionalPriceConverted && { minimumPromotionalPrice: minimumPromotionalPriceConverted }),
+      ...(maximumPromotionalPriceConverted && { maximumPromotionalPrice: maximumPromotionalPriceConverted }),
+      ...(companyIdConverted && { companyId: companyIdConverted }),
     });
 
     return res.status(200).json(products);

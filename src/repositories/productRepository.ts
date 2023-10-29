@@ -1,11 +1,11 @@
 import { Prisma, PrismaClient, Product } from "@prisma/client";
-import ProductDTO, { ProductTitles } from "../shared/src/models/product";
+import ProductDTO, { ProductFilter, ProductTitles } from "../shared/src/models/product";
 import IProductRepository from "./interfaces/productRepositoryInterface";
 
 export class ProductRepository implements IProductRepository {
     private repository = new PrismaClient().product;
 
-  async findMany(data: ProductDTO): Promise<ProductDTO[]> {
+  async findMany(data: ProductFilter): Promise<ProductDTO[]> {
     const {
       companyId,
       description,
@@ -28,7 +28,10 @@ export class ProductRepository implements IProductRepository {
         title,
         subTitle,
         companyId: companyId,
-        promotionalPrice,
+        promotionalPrice: {
+          lt: data.maximumPromotionalPrice,
+          gt: data.minimumPromotionalPrice,
+        },
         regularPrice,
         description,
         imageUrl,
