@@ -15,7 +15,7 @@ export interface ProductFilter {
     startAt?: Date | null;
     endAt?: Date | null;
     companyId?: number;
-    title?: string | null;
+    titles?: string[] | null;
     subTitle?: string | null;
     description?: string | null;
     imageUrl?: string | null;

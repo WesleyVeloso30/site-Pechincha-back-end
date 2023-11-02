@@ -14,11 +14,18 @@ const productService = new ProductService(productRepository, companyRepository);
 
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
-    const { startAt, endAt, title, maximumPromotionalPrice, companyId, minimumPromotionalPrice} = req.query;
+    const { startAt, endAt, maximumPromotionalPrice, companyId, minimumPromotionalPrice} = req.query;
+
+    let titles = null;
+    if (req.query.titles !== '') {
+      titles = Array.isArray(req.query.titles) ? req.query.titles : [req.query.titles];
+    }
+
+    if (req.query.titles === '') titles = undefined; 
 
     const endAtConverted = endAt && dateTreatment(endAt as string);
     const startAtConverted = startAt && dateTreatment(startAt as string);
-    
+
     if (startAtConverted && endAtConverted) {
       if (endAtConverted <= startAtConverted) throw new Error("A data inicial não pode ser maior do que a data final da promoção.");
     }
@@ -35,7 +42,7 @@ productRoute.get("/", async (req: Request, res: Response) => {
     const products = await productService.findProduct({
       ...(endAtConverted && { endAt: endAtConverted }),
       ...(startAtConverted && { startAt: startAtConverted }),
-      ...(title && { title: title as string }),
+      ...(titles && { titles: titles as string[] }),
       ...(minimumPromotionalPriceConverted && { minimumPromotionalPrice: minimumPromotionalPriceConverted }),
       ...(maximumPromotionalPriceConverted && { maximumPromotionalPrice: maximumPromotionalPriceConverted }),
       ...(companyIdConverted && { companyId: companyIdConverted }),

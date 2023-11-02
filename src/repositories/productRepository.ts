@@ -15,7 +15,7 @@ export class ProductRepository implements IProductRepository {
       regularPrice,
       startAt,
       subTitle,
-      title,
+      titles,
     } = data;
     const result = await this.repository.findMany({
       where: {
@@ -25,7 +25,9 @@ export class ProductRepository implements IProductRepository {
         endAt: {
           lte: endAt as Date | undefined,
         },
-        title,
+        title: {
+          in: titles,
+        },
         subTitle,
         companyId: companyId,
         promotionalPrice: {
@@ -51,7 +53,7 @@ export class ProductRepository implements IProductRepository {
           }
         }
       }
-    })
+    });
 
     return result;
   }

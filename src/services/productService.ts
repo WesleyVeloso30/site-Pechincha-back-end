@@ -23,8 +23,8 @@ export class ProductService implements IProductService {
         return product;
     }
 
-    async findProduct({ startAt, endAt, title, minimumPromotionalPrice, companyId, maximumPromotionalPrice }: ProductFilter): Promise<ProductDTO[]>{
-        const products = await this.productRepository.findMany({startAt, endAt, companyId, minimumPromotionalPrice, maximumPromotionalPrice, title});
+    async findProduct({ startAt, endAt, titles, minimumPromotionalPrice, companyId, maximumPromotionalPrice }: ProductFilter): Promise<ProductDTO[]>{
+        const products = await this.productRepository.findMany({startAt, endAt, companyId, minimumPromotionalPrice, maximumPromotionalPrice, titles});
 
         return products;
     }
