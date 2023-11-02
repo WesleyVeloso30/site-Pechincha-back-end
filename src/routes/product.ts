@@ -6,11 +6,13 @@ import { ProductRepository } from "../repositories/productRepository";
 import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
 import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";
 import { CompanyRepository } from "../repositories/companyRepository";
+// import { ProductImageService } from "../services/productImageService";
 
 const productRoute = Router();
 const productRepository: IProductRepository = new ProductRepository();
 const companyRepository: ICompanyRepository = new CompanyRepository();
 const productService = new ProductService(productRepository, companyRepository);
+// const productImageService: IProductImageRepository = new ProductImageService();
 
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
@@ -78,9 +80,11 @@ productRoute.get("/:id", async (req: Request, res: Response) => {
   }
 });
 
-
+  // multer.single("image"),
 productRoute.post("/", async (req: Request, res: Response) => {
   try {
+    // const Image = req.file;
+
     let {
       companyId,
       startAt,
@@ -89,7 +93,6 @@ productRoute.post("/", async (req: Request, res: Response) => {
       promotionalPrice,
       title,
       subTitle,
-      imageUrl,
       description
     } = req.body;
 
@@ -100,7 +103,7 @@ productRoute.post("/", async (req: Request, res: Response) => {
       !endAt ||
       !title ||
       !promotionalPrice
-      // !imageUrl
+      // !Image
     ) {
       throw new Error("Algum campo inválido");
     }
@@ -118,6 +121,10 @@ productRoute.post("/", async (req: Request, res: Response) => {
 
     if (endAtConverted <= startAtConverted) throw new Error("A data inicial não pode ser maior do que a data final da promoção.");
 
+    // const imageUrl = await productImageService.uploadImage(Image).catch((err) => {
+    //   throw new Error(`Ocorreu um erro ao realizar o upload da imagem: ${err}`)
+    // });
+
     // seguindo para o service...
     const product = await productService.addProduct({
       regularPrice,
@@ -127,7 +134,7 @@ productRoute.post("/", async (req: Request, res: Response) => {
       companyId,
       title,
       subTitle,
-      imageUrl,
+      // imageUrl,
       description
     } as ProductDTO);
 
