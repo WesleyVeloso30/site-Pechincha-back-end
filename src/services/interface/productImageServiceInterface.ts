@@ -1,6 +1,6 @@
-// import ProductDTO from "../../shared/src/models/product";
+import ProductDTO from "../../shared/src/models/product";
 
 
-// export interface IProductImageServiceInterface {
-//     uploadImage(image: Express.Multer.File , id: string): Promise<string>;
-// };
+export interface IProductImageServiceInterface {
+    uploadImage(image: Express.Multer.File): Promise<string>;
+};

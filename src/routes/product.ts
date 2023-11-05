@@ -6,13 +6,19 @@ import { ProductRepository } from "../repositories/productRepository";
 import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
 import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";
 import { CompanyRepository } from "../repositories/companyRepository";
-// import { ProductImageService } from "../services/productImageService";
+import { ProductImageService } from "../services/productImageService";
+import { IProductImageServiceInterface } from "../services/interface/productImageServiceInterface";
+import Multer from "multer";
+
+const multer = Multer({
+  storage: Multer.memoryStorage(),
+});
 
 const productRoute = Router();
 const productRepository: IProductRepository = new ProductRepository();
 const companyRepository: ICompanyRepository = new CompanyRepository();
 const productService = new ProductService(productRepository, companyRepository);
-// const productImageService: IProductImageRepository = new ProductImageService();
+const productImageService: IProductImageServiceInterface = new ProductImageService();
 
 productRoute.get("/", async (req: Request, res: Response) => {
   try {
@@ -81,9 +87,9 @@ productRoute.get("/:id", async (req: Request, res: Response) => {
 });
 
   // multer.single("image"),
-productRoute.post("/", async (req: Request, res: Response) => {
+productRoute.post("/", multer.single("Image"), async (req: Request, res: Response) => {
   try {
-    // const Image = req.file;
+    const Image = req.file;
 
     let {
       companyId,
@@ -102,8 +108,8 @@ productRoute.post("/", async (req: Request, res: Response) => {
       !startAt ||
       !endAt ||
       !title ||
-      !promotionalPrice
-      // !Image
+      !promotionalPrice ||
+      !Image
     ) {
       throw new Error("Algum campo inválido");
     }
@@ -111,6 +117,7 @@ productRoute.post("/", async (req: Request, res: Response) => {
     // conversão dos dados para o tipo correto
     regularPrice = verifyIfNotANumber(regularPrice);
     promotionalPrice = verifyIfNotANumber(promotionalPrice);
+    companyId = verifyIfNotANumber(companyId);
 
     // conversão e tratamento para startAt e endAt
     const startAtConverted = dateTreatment(startAt);
@@ -121,9 +128,9 @@ productRoute.post("/", async (req: Request, res: Response) => {
 
     if (endAtConverted <= startAtConverted) throw new Error("A data inicial não pode ser maior do que a data final da promoção.");
 
-    // const imageUrl = await productImageService.uploadImage(Image).catch((err) => {
-    //   throw new Error(`Ocorreu um erro ao realizar o upload da imagem: ${err}`)
-    // });
+    const imageUrl = await productImageService.uploadImage(Image).catch((err) => {
+      throw new Error(`Ocorreu um erro ao realizar o upload da imagem: ${err}`)
+    });
 
     // seguindo para o service...
     const product = await productService.addProduct({
@@ -134,7 +141,7 @@ productRoute.post("/", async (req: Request, res: Response) => {
       companyId,
       title,
       subTitle,
-      // imageUrl,
+      imageUrl,
       description
     } as ProductDTO);
 
