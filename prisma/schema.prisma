@@ -11,8 +11,8 @@ model Product {
   id               Int                @id @default(autoincrement())
   startAt          DateTime?
   endAt            DateTime?
-  regularPrice     Int?
-  promotionalPrice Int?
+  regularPrice     Float?
+  promotionalPrice Float?
   title            String?
   subTitle         String?
   description      String?
