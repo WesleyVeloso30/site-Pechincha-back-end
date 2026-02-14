@@ -3,6 +3,7 @@ import * as jwt from "jsonwebtoken";
 import UserDTO from "../shared/src/models/user";
 import IUserRepository from "../repositories/interfaces/userRepositoryInterface";
 import { IAuthService, AuthResponse } from "./interface/authServiceInterface";
+import { isValidEmail } from "../shared/src/util";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret-pechincha-default";
 const SALT_ROUNDS = 10;
@@ -20,19 +21,17 @@ export class AuthService implements IAuthService {
   async register(data: UserDTO): Promise<AuthResponse> {
     const { email, name, password } = data;
 
-    if (!email || !password) {
-      throw new Error("Email e senha são obrigatórios.");
-    }
+    this.validateRegisterData({ email, name, password });
 
     const userExist = await this.userRepository.findByEmail(email);
     if (userExist) {
       throw new Error("Usuário já cadastrado com este email.");
     }
 
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+    const hashedPassword = await bcrypt.hash(password!, SALT_ROUNDS);
     const user = await this.userRepository.create({
       email,
-      name: name || null,
+      name,
       password: hashedPassword,
     });
 
@@ -108,5 +107,25 @@ export class AuthService implements IAuthService {
       throw new Error("Token inválido.");
     }
     return decoded;
+  }
+
+  private validateRegisterData(data: { email?: string; name?: string; password?: string }): void {
+    const { email, name, password } = data;
+
+    if (!email || !password) {
+      throw new Error("Email e senha são obrigatórios.");
+    }
+
+    if (password.length < 8) {
+      throw new Error("Senha deve ter no mínimo 8 caracteres.");
+    }
+
+    if (!name) {
+      throw new Error("Nome é obrigatório.");
+    }
+
+    if (!isValidEmail(email)) {
+      throw new Error("Email inválido.");
+    }
   }
 }

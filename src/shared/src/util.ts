@@ -9,6 +9,9 @@ export function verifyIfNotANumber(param: string): number {
     return number
 }
 
+export function isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 export function verifyIfPastDate(date: Date): void {
     const dateActual = new Date();
