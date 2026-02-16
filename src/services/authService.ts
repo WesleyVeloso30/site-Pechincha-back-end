@@ -46,6 +46,10 @@ export class AuthService implements IAuthService {
   }
 
   async login(email: string, password: string): Promise<AuthResponse> {
+    if (isValidEmail(email)) {
+      throw new Error("Email inválido.");
+    }
+
     const user = await this.userRepository.findByEmail(email);
     if (!user?.password) {
       throw new Error("Email ou senha inválidos.");
@@ -67,14 +71,16 @@ export class AuthService implements IAuthService {
   }
 
   async refresh(refreshToken: string): Promise<AuthResponse> {
-    if (!refreshToken) {
-      throw new Error("Refresh token não informado.");
-    }
     const decoded = this.verifyRefreshToken(refreshToken);
+    if (!decoded?.userId) {
+      throw new Error("Token inválido.");
+    }
+
     const user = await this.userRepository.findById(decoded.userId);
     if (!user) {
       throw new Error("Usuário não encontrado.");
     }
+
     const token = this.generateAccessToken(user.id);
     const newRefreshToken = this.generateRefreshToken(user.id);
     return {

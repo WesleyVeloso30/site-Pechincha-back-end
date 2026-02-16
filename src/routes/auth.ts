@@ -13,10 +13,6 @@ authRoute.post("/register", async (req: Request, res: Response) => {
   try {
     const { email, name, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ message: "Email e senha são obrigatórios." });
-    }
-
     const result = await authService.register({
       email,
       name,
