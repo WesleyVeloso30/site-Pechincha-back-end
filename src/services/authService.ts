@@ -1,9 +1,10 @@
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
-import UserDTO from "../shared/src/models/user";
+import UserDTO from "../shared/models/user";
 import IUserRepository from "../repositories/interfaces/userRepositoryInterface";
 import { IAuthService, AuthResponse } from "./interface/authServiceInterface";
-import { isValidEmail } from "../shared/src/util";
+import { isValidEmail } from "../shared/util";
+import { sendVerificationEmail } from "../shared/mechanisms/emailUtilHelper";
 
 const JWT_SECRET = process.env.JWT_SECRET || "secret-pechincha-default";
 const SALT_ROUNDS = 10;
@@ -28,15 +29,22 @@ export class AuthService implements IAuthService {
       throw new Error("Usuário já cadastrado com este email.");
     }
 
+    const verificationCode = this.generateVerificationCode();
+    await sendVerificationEmail(email, verificationCode);
+
     const hashedPassword = await bcrypt.hash(password!, SALT_ROUNDS);
     const user = await this.userRepository.create({
       email,
       name,
       password: hashedPassword,
+      // verificationCode,
+      // emailVerified: false,
+      // verificationExpires: new Date(Date.now() + 10 * 60 * 1000),
     });
 
     const token = this.generateAccessToken(user.id);
     const refreshToken = this.generateRefreshToken(user.id);
+
     return {
       user: { id: user.id, email: user.email, name: user.name ?? undefined },
       token,
@@ -134,4 +142,9 @@ export class AuthService implements IAuthService {
       throw new Error("Email inválido.");
     }
   }
+
+  private generateVerificationCode(): string {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+  
 }

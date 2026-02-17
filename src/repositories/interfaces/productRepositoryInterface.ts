@@ -1,5 +1,5 @@
 import { Prisma, Product } from "@prisma/client";
-import ProductDTO, { ProductFilter, ProductTitles } from "../../shared/src/models/product";
+import ProductDTO, { ProductFilter, ProductTitles } from "../../shared/models/product";
 
 export default interface IProductRepository {
     findMany(data: ProductFilter): Promise<ProductDTO[]>;

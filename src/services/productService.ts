@@ -1,6 +1,6 @@
 import { Product } from "@prisma/client";
-import ProductDTO, { ProductFilter, ProductTitles } from "../shared/src/models/product";
-import { dateTreatment } from "../shared/src/util";
+import ProductDTO, { ProductFilter, ProductTitles } from "../shared/models/product";
+import { dateTreatment } from "../shared/util";
 import { IProductService } from "./interface/productServiceInterface";
 import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
 import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";

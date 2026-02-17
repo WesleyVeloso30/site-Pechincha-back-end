@@ -1,4 +1,4 @@
-import ProductDTO from "../../shared/src/models/product";
+import ProductDTO from "../../shared/models/product";
 
 
 export interface IProductImageServiceInterface {

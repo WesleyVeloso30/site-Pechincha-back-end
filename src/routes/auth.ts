@@ -1,5 +1,5 @@
 import { Router, Request, Response } from "express";
-import UserDTO from "../shared/src/models/user";
+import UserDTO from "../shared/models/user";
 import { AuthService } from "../services/authService";
 import { UserRepository } from "../repositories/userRepository";
 import IUserRepository from "../repositories/interfaces/userRepositoryInterface";

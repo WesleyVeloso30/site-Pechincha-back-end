@@ -1,4 +1,4 @@
-import CompanyDTO from "../../shared/src/models/company";
+import CompanyDTO from "../../shared/models/company";
 
 export interface ICompanyService {
     addCompany(data: CompanyDTO): Promise<CompanyDTO>;

@@ -1,10 +1,10 @@
 import { Router, Request, Response } from "express";
-import CompanyDTO from "../shared/src/models/company";
+import CompanyDTO from "../shared/models/company";
 import { CompanyService } from "../services/companyService";
 import { CompanyRepository } from "../repositories/companyRepository";
 import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";
 import { ICompanyService } from "../services/interface/companyServiceInterface";
-import { verifyIfNotANumber } from "../shared/src/util";
+import { verifyIfNotANumber } from "../shared/util";
 
 const companyRoute = Router();
 const companyRepository: ICompanyRepository = new CompanyRepository();

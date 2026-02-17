@@ -1,5 +1,5 @@
 import { Company } from "@prisma/client";
-import CompanyDTO from "../shared/src/models/company";
+import CompanyDTO from "../shared/models/company";
 import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";
 import { ICompanyService } from "./interface/companyServiceInterface";
 

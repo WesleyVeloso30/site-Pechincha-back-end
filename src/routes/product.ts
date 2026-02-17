@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
-import ProductDTO from "../shared/src/models/product";
+import ProductDTO from "../shared/models/product";
 import { ProductService } from "../services/productService";
-import { dateTreatment, verifyIfNotANumber, verifyIfPastDate } from "../shared/src/util";
+import { dateTreatment, verifyIfNotANumber, verifyIfPastDate } from "../shared/util";
 import { ProductRepository } from "../repositories/productRepository";
 import IProductRepository from "../repositories/interfaces/productRepositoryInterface";
 import ICompanyRepository from "../repositories/interfaces/companyRepositoryInterface";

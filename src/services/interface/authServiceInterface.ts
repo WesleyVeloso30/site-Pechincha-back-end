@@ -1,4 +1,4 @@
-import UserDTO from "../../shared/src/models/user";
+import UserDTO from "../../shared/models/user";
 
 export interface AuthResponse {
   user: Omit<UserDTO, "password">;

@@ -1,4 +1,4 @@
-import ProductDTO, { ProductFilter, ProductTitles } from "../../shared/src/models/product";
+import ProductDTO, { ProductFilter, ProductTitles } from "../../shared/models/product";
 
 export interface IProductService {
     findOne(id: number): Promise<ProductDTO | null>;
